@@ -439,6 +439,9 @@ const Home = () => {
     }
 ];
   const etherContractAddress = "0xde0B295669a9FD93d5F28D9Ec85E40f4cb697BAe";
+  const BScTestnetRPCprovider = new ethers.providers.JsonRpcProvider("https://data-seed-prebsc-1-s1.binance.org:8545");
+  const patoTokenABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Paused","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"id","type":"uint256"}],"name":"Snapshot","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"account","type":"address"}],"name":"Unpaused","type":"event"},{"inputs":[{"internalType":"address","name":"owner","type":"address"},{"internalType":"address","name":"spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"uint256","name":"snapshotId","type":"uint256"}],"name":"balanceOfAt","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"burnFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"snapshot","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"snapshotId","type":"uint256"}],"name":"totalSupplyAt","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+  const patoTokenContractAddress = "0x532DDd8581481DB7e5c4A0E0a213BeE8A8717e78";
 
   //here we are reading smart contracts using inbuilt functions
   const readUsingInbuiltFunctions = async () => {
@@ -454,37 +457,83 @@ const Home = () => {
 
         const balanceInEther = ethers.utils.formatEther(mybalance);
         console.log("My account balance in ether:", balanceInEther);
+
+        const getGreenNetwork = await GoerliRPCprovider.getNetwork(greenContractAddress);
+        console.log("These are the network details of Green token: ", getGreenNetwork);
+
+        const getGreenFees = await GoerliRPCprovider.getFeeData(greenContractAddress);
+        console.log("This is the fee structure of Green token: ", getGreenFees);
+
+        const greenFeeBalanceInGwei = ethers.utils.formatUnits(getGreenFees.maxFeePerGas, "gwei");
+        console.log("Green max fee balance in gwei:", greenFeeBalanceInGwei);
+        
+        const greenFeeBalanceInEthers = ethers.utils.formatUnits(getGreenFees.maxFeePerGas, "ether");
+        console.log("Green max fee balance in ether:", greenFeeBalanceInEthers);
+        
         };
-      readUsingInbuiltFunctions();
+
+        readUsingInbuiltFunctions();
 
       //here we are reading smart contracts using ABI
        const readUsingABI = async () => {
        const greenContract = new ethers.Contract(greenContractAddress, greenAbi, GoerliRPCprovider);
        const BScContract = new ethers.Contract(BNBContractAddress, bnbAbi, BScmainnetRPCprovider);
        const EthereumContract = new ethers.Contract(etherContractAddress, etherAbi, EthereumMainnetRPCprovider);
+       const patoTokenContract = new ethers.Contract(patoTokenContractAddress, patoTokenABI, BScTestnetRPCprovider);
        try {
         console.log("we are reading the total supply: " + await greenContract.totalSupply());
         console.log("we are reading the name of the token: " + await greenContract.name());
         console.log("we are reading the token symbol: " + await greenContract.symbol());
-        <br></br>
+        
         console.log("we are reading the name of the coin: " + await BScContract.name());
         console.log("we are reading the total supply: " + await BScContract.totalSupply());
         console.log("we are reading the token symbol: " + await BScContract.symbol());
-        <br></br>
+        
         console.log("we are reading the number of Ethereum owners: " + await EthereumContract.m_numOwners());
         console.log("we are reading the daily limit: " + await EthereumContract.m_dailyLimit());
         console.log("we are reading the required transactions: " + await EthereumContract.m_required());
+
+        console.log("we are reading the name of the token: " + await patoTokenContract.name());
+        console.log("we are reading the total supply of the pato token: " + await patoTokenContract.totalSupply());
+        const theTotalSupply = await patoTokenContract.totalSupply();
+        console.log("This is the total supply of the pato token in ethers units " + ethers.utils.formatEther(theTotalSupply));
+        console.log("we are reading the pato token symbol: " + await patoTokenContract.symbol());
+        console.log("we are reading the address of the owner of pato token: " + await patoTokenContract.owner());
+         
        } catch (error) {
         console.log(error);
        }
        };
-       readUsingABI()
+       readUsingABI();
   
+       //here we write to smart contracts from our local environment
        const writingToContracts = async () => {
-       
+        const ethereum = (window as any).ethereum;
+        const accounts = await ethereum.request({
+          method: "eth_requestAccounts",
+        })
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const walletAddress = accounts[0]    // first account in MetaMask
+        const signer = provider.getSigner(walletAddress)
+        const greenTokenContractwrite = new ethers.Contract(greenContractAddress, greenAbi, signer);
+            try {
+            const writeToGreenContract = await greenTokenContractwrite.connect(signer).transfer("0x0A9c2Ab6F4dd5Fbeb544c3d76dC0a65A7E79be79", "5000000");
+            await writeToGreenContract.wait();
+
+           } catch (error) {
+            console.log(error);
+           }
+           };
+           writingToContracts();
+
+           //to connect to metamask
+          const connectMetamask = async () => {
+                
+
+           };
+           connectMetamask();
+
        }
     
-            
-};
 
 export default Home;
